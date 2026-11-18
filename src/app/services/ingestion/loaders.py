@@ -1,10 +1,8 @@
 import io
+import pymupdf
+import pandas as pd
 from pathlib import Path
 from typing import Type
-
-import fitz  # PyMuPDF
-import pandas as pd
-
 from app.core.exceptions import DocumentParseError, EmptyDocumentError
 from app.services.ingestion.base import BaseLoader
 from app.services.ingestion.schemas import FileFormat, ParsedDocument, RawFileMetadata
@@ -30,7 +28,7 @@ class PdfLoader(BaseLoader):
 
     def load(self, raw_bytes: bytes, metadata: RawFileMetadata) -> ParsedDocument:
         try:
-            doc = fitz.open(stream=raw_bytes, filetype="pdf")
+            doc = pymupdf.open(stream=raw_bytes, filetype="pdf")
         except Exception as exc:
             raise DocumentParseError(f"PDF open failed: {exc}") from exc
 
