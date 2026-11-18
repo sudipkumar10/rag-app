@@ -5,6 +5,8 @@ from app.core.logging import logger, setup_logging
 from app.services.storage.minio_client import minio_client
 from app.db.session import engine, Base 
 from app.db import models
+from app.api.documents import router as documents_router 
+
 
 
 @asynccontextmanager
@@ -26,6 +28,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
+
+app.include_router(documents_router, prefix="/api/v1/documents", tags=["Documents"])
 
 @app.get("/health")
 async def health() -> dict:
