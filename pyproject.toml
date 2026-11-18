@@ -26,11 +26,21 @@ dependencies = [
     "structlog>=26.1.0",
     "tenacity>=9.2.1",
     "uvicorn[standard]>=0.54.0",
+    "tiktoken>=0.7.0",
 ]
 
 [project.scripts]
-rag-app = "rag_app:main"
+rag-app = "app.main:app"
 
 [build-system]
 requires = ["uv_build>=0.13.6,<0.14.0"]
 build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "app"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.5.0",
+]
