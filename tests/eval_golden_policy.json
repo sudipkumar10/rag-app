@@ -1,0 +1,18 @@
+[
+  {
+    "user_input": "How many casual leaves do I get in a year, and what is the max consecutive limit?",
+    "reference": "Full-time employees get 12 days of Casual Leave per calendar year, with a maximum of 3 consecutive days at a time."
+  },
+  {
+    "user_input": "When is a medical certificate required for sick leave and how many sick leaves can carry forward?",
+    "reference": "A medical certificate from a registered medical practitioner is required if sick leave exceeds 3 consecutive days (submitted on the HR portal within 5 working days of returning). Up to 5 days of sick leave can be carried forward to the next year."
+  },
+  {
+    "user_input": "What is the maternity and paternity leave entitlement?",
+    "reference": "Female employees get 26 weeks of paid maternity leave for the first two children and 12 weeks for the third child. Male employees get 14 days (2 weeks) of paternity leave."
+  },
+  {
+    "user_input": "By what time must I notify for an unplanned absence to avoid Loss of Pay?",
+    "reference": "Employees must notify their direct manager and HR via email no later than 10:00 AM on the day of the unplanned absence, otherwise it may be marked as Loss of Pay (LOP)."
+  }
+]

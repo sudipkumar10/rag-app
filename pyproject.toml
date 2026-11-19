@@ -29,6 +29,7 @@ dependencies = [
     "tiktoken>=0.7.0",
     "python-multipart>=0.0.34",
     "groq>=1.7.0",
+    "openai>=3.3.0",
 ]
 
 [project.scripts]
