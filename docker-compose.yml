@@ -1,4 +1,5 @@
 services:
+
   minio:
     image: cgr.dev/chainguard/minio:latest
     container_name: rag-minio
@@ -11,7 +12,6 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - minio_data:/data
-
   postgres:
     image: postgres:16-alpine
     container_name: rag-postgres
@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: rag
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: rag-pgadmin
@@ -34,6 +34,21 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: rag-langfuse
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-rag}:${POSTGRES_PASSWORD:-rag}@postgres:5432/langfuse
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:-change-me-nextauth-secret-min-32-chars}
+      SALT: ${LANGFUSE_SALT:-change-me-salt-min-32-chars}
+      ENCRYPTION_KEY: ${LANGFUSE_ENCRYPTION_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      TELEMETRY_ENABLED: "false"
 
   qdrant:
     image: qdrant/qdrant:latest

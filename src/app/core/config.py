@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     groq_api_key: SecretStr = SecretStr("")
     llm_model_name: str = "openai/gpt-oss-20b"
 
+    # Langfuse
+    langfuse_public_key: str | None = None
+    langfuse_secret_key: SecretStr | None = None
+    langfuse_host: str = "http://localhost:3000"
+
     # MinIO
     minio_endpoint: str = "localhost:9000"
     minio_access_key: SecretStr = SecretStr("minioadmin")
