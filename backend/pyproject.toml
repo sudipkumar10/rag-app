@@ -1,7 +1,7 @@
 [project]
-name = "rag-app"
+name = "rag-backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "Production-grade modular RAG backend with FastAPI, Qdrant, MinIO, and Celery"
 readme = "README.md"
 authors = [
     { name = "Sudip Kumar", email = "sudipkumar.js@gmail.com" }
@@ -33,7 +33,7 @@ dependencies = [
 ]
 
 [project.scripts]
-rag-app = "app.main:app"
+rag-backend = "app.main:app"
 
 [build-system]
 requires = ["uv_build>=0.13.6,<0.14.0"]
