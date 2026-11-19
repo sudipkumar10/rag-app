@@ -1,11 +1,12 @@
-__pycache__/
-*.py[cod]
-.venv/
+# Environment variables & Secrets (Global)
 .env
-.pytest_cache/
-.ruff_cache/
-.mypy_cache/
-*.log
+.env.*
+!.env.example
+
+# OS generated files
 .DS_Store
-uv.lock
-cmd.txt
+Thumbs.db
+
+# Editors & IDEs
+.vscode/
+.idea/
