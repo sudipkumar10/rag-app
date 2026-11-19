@@ -1,11 +1,5 @@
-"""
-Central configuration — 12-factor app.
-All values from env vars. No hardcoded secrets.
-"""
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -18,6 +12,10 @@ class Settings(BaseSettings):
     app_name: str = "rag-app"
     app_env: str = Field(default="development", description="development|staging|production")
     log_level: str = "INFO"
+
+    # LLM Settings
+    groq_api_key: SecretStr = SecretStr("")
+    llm_model_name: str = "openai/gpt-oss-20b"
 
     # MinIO
     minio_endpoint: str = "localhost:9000"
