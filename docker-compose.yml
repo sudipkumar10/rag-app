@@ -1,5 +1,4 @@
 services:
-
   minio:
     image: cgr.dev/chainguard/minio:latest
     container_name: rag-minio
@@ -12,6 +11,7 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - minio_data:/data
+
   postgres:
     image: postgres:16-alpine
     container_name: rag-postgres
@@ -35,21 +35,6 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
 
-  langfuse:
-    image: langfuse/langfuse:2
-    container_name: rag-langfuse
-    depends_on:
-      - postgres
-    ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-rag}:${POSTGRES_PASSWORD:-rag}@postgres:5432/langfuse
-      NEXTAUTH_URL: http://localhost:3000
-      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:-change-me-nextauth-secret-min-32-chars}
-      SALT: ${LANGFUSE_SALT:-change-me-salt-min-32-chars}
-      ENCRYPTION_KEY: ${LANGFUSE_ENCRYPTION_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
-      TELEMETRY_ENABLED: "false"
-
   qdrant:
     image: qdrant/qdrant:latest
     container_name: rag-qdrant
@@ -67,8 +52,74 @@ services:
     volumes:
       - redis_data:/data
 
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: rag-langfuse
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-rag}:${POSTGRES_PASSWORD:-rag}@postgres:5432/langfuse
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:-change-me-nextauth-secret-min-32-chars}
+      SALT: ${LANGFUSE_SALT:-change-me-salt-min-32-chars}
+      ENCRYPTION_KEY: ${LANGFUSE_ENCRYPTION_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      TELEMETRY_ENABLED: "false"
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: rag-backend:latest         
+    container_name: rag-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - hf_cache:/root/.cache/huggingface
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - qdrant
+      - redis
+      - minio
+
+  worker:
+    image: rag-backend:latest
+    container_name: rag-worker
+    command: celery -A app.workers.celery_app.celery_app worker --loglevel=info --pool=solo
+    volumes:
+      - ./backend:/app
+      - hf_cache:/root/.cache/huggingface
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - qdrant
+      - postgres
+      - minio
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    container_name: rag-frontend
+    ports:
+      - "3001:3000" # Map to 3001 to avoid clash with Langfuse
+    env_file:
+      - .env
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    depends_on:
+      - api
+
 volumes:
   minio_data:
   postgres_data:
   qdrant_data:
   redis_data:
+  hf_cache:

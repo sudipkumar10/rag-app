@@ -1,0 +1,46 @@
+# Git & Editor files
+.git
+.gitignore
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Environment & Secrets (root .env is passed via env_file, not needed in build context)
+.env
+.env.*
+!.env.example
+
+# Python caches, virtualenvs & build/test artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+ENV/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# Node / Next.js artifacts (in case root context touches frontend or local builds exist)
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+.next/
+out/
+
+# Local data, logs & temporary files
+*.log
+logs/
+data/
+uploads/
+tmp/
+temp/
